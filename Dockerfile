@@ -32,6 +32,7 @@ RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.n
     yum -y install http://mirror.centos.org/centos/8/AppStream/x86_64/os/Packages/boost-program-options-1.66.0-10.el8.x86_64.rpm && \
     yum -y install jemalloc hostname && \
     yum -y install MariaDB-server MariaDB-client MariaDB-backup && \
+    yum -y install pwgen gnupg tzdata xz && \
     yum clean all && rm -fv /etc/yum.repos.d/mariadb.repo && rm -fr /var/lib/mysql && \
     mkdir /var/lib/mysql && echo "ES_VERSION=${ES_VERSION}" >> /etc/IMAGEINFO
     
@@ -49,10 +50,11 @@ RUN gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys B42F6819007F00F8
     && rm -fr /root/.gnupg/ \
     && chmod +x /usr/local/bin/gosu
 #
-RUN mkdir /es-initdb.d
+RUN mkdir /docker-entrypoint-initdb.d
 #
 VOLUME /var/lib/mysql
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-COPY zz_es-docker.cnf /etc/my.cnf.d/
-ENTRYPOINT ["/docker-entrypoint.sh"]
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
+ENTRYPOINT ["docker-entrypoint.sh"]
 EXPOSE 3306/tcp
+CMD ["mysqld"]
