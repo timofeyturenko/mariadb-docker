@@ -1,6 +1,7 @@
 #!/bin/bash
 set -eo pipefail
 shopt -s nullglob
+set -x
 # logging functions
 mysql_log() {
 	local type="$1"; shift
