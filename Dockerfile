@@ -54,7 +54,8 @@ RUN mkdir /docker-entrypoint-initdb.d
 #
 VOLUME /var/lib/mysql
 COPY docker-entrypoint.sh /usr/local/bin/
-COPY docker-entrypoint.sh /
-ENTRYPOINT ["/docker-entrypoint.sh"]
+RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
+RUN chmod a+x /usr/local/bin/docker-entrypoint.sh
+ENTRYPOINT ["docker-entrypoint.sh"]
 EXPOSE 3306/tcp
 CMD ["mysqld"]
