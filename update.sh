@@ -71,7 +71,6 @@ for version in "${versions[@]}"; do
 	done
 
 	cp Dockerfile.template "$version/Dockerfile"
-	cp setup-custom-repository.sh "$version/"
 
 	backup='mariadb-backup'
 	if [[ "$version" < 10.3 ]]; then

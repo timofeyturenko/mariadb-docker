@@ -64,15 +64,13 @@ ENV MARIADB_VERSION 1:10.2.37+maria~bionic
 # release-status:Stable
 # (https://downloads.mariadb.org/mariadb/+releases/)
 
-COPY setup-custom-repository.sh /tmp/setup-custom-repository.sh
-
 RUN if [ -z "${REPOSITORY}" ]; then \
         curl -L https://downloads.mariadb.com/MariaDB/mariadb_repo_setup > /tmp/es_repo_setup && chmod +x /tmp/es_repo_setup && \
         /tmp/es_repo_setup --apply --verbose --skip-maxscale \
         --mariadb-server-version=${MARIADB_MAJOR} && rm -fv /tmp/es_repo_setup; \
     else \
-        chmod +x /tmp/setup-custom-repository.sh && \
-        /tmp/setup-custom-repository.sh --repository ${REPOSITORY} --repository-key ${REPOSITORY_KEY}; \
+        apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys "${key}"
+        echo "deb $repository" > /etc/apt/sources.list.d/mariadb.list
     fi
 
 
